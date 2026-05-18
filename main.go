@@ -1,17 +1,13 @@
 package main
 
-import (
-	"github.com/gofiber/fiber/v3"
-	"github.com/gofiber/fiber/v3/middleware/cors"
-)
+import "fmt"
+
+// Tambah adalah fungsi sederhana yang menerima dua integer dan mengembalikan hasil penjumlahannya.
+func Tambah(a int, b int) int {
+	return a + b
+}
 
 func main() {
-	app := fiber.New()
-	app.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"*"},
-	}))
-	app.Get("/", func(c fiber.Ctx) error {
-		return c.SendString("Hello world")
-	})
-	app.Listen(":6000")
+	hasil := Tambah(5, 5)
+	fmt.Printf("Aplikasi berjalan. Hasil 5 + 5 = %d\n", hasil)
 }

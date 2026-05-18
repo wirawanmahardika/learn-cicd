@@ -1,0 +1,54 @@
+name: Golang CI/CD to VPS
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v4
+
+            - name: Setup Go Environment
+              uses: actions/setup-go@v5
+              with:
+                  go-version: '1.25.7'
+                  cache: true
+
+            - name: Run Tests
+              run: go test -v ./...
+
+            - name: Build Binary
+              run: |
+                  env GOOS=linux GOARCH=amd64 go build -o myapp main.go
+
+            # Step 5: Mengubah target direktori ke folder Home (~)
+            - name: Copy Binary to VPS Home Directory
+              uses: appleboy/scp-action@v0.1.7
+              with:
+                  host: ${{ secrets.VPS_HOST }}
+                  username: ${{ secrets.VPS_USERNAME }}
+                  key: ${{ secrets.VPS_SSH_KEY }}
+                  port: ${{ secrets.VPS_PORT }}
+                  source: 'myapp'
+                  # Ganti 'ubuntu' di bawah ini dengan nama user VPS Anda (misal: root, ubuntu, debian)
+                  target: '/home/wirawan/my-golang-app/'
+
+            # Step 6: Eksekusi perubahan di direktori Home via SSH
+            - name: Restart Application Service
+              uses: appleboy/ssh-action@v1.0.3
+              with:
+                  host: ${{ secrets.VPS_HOST }}
+                  username: ${{ secrets.VPS_USERNAME }}
+                  key: ${{ secrets.VPS_SSH_KEY }}
+                  port: ${{ secrets.VPS_PORT }}
+                  script: |
+                      # Menggunakan jalur absolut direktori home agar eksekusi presisi
+                      chmod +x /home/wirawan/my-golang-app/myapp
+
+                      # Restart service aplikasi Anda
+                      sudo systemctl restart myapp.service
