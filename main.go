@@ -12,4 +12,5 @@ func main() {
 	hasil := Tambah(5, 5)
 	fmt.Printf("Aplikasi berjalan. Hasil 5 + 5 = %d\n", hasil)
 	fmt.Printf("Hello %s", name)
+	fmt.Printf("Hello %d", 1+5)
 }
