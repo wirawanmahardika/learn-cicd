@@ -8,6 +8,8 @@ func Tambah(a int, b int) int {
 }
 
 func main() {
+	name := "wirawan"
 	hasil := Tambah(5, 5)
 	fmt.Printf("Aplikasi berjalan. Hasil 5 + 5 = %d\n", hasil)
+	fmt.Printf("Hello %s", name)
 }
